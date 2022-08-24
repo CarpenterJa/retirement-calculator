@@ -9,16 +9,16 @@ Easiest Way:
 
 Harder Way:
 - You can clone this git repo
-- Use pipenv to for the python dependencies 
-- Use npm install within client for the node dependencies
+- Use pipenv to install the python dependencies 
+- Use npm install within client for the node modules
 - Change proxy within package.json to https://localhost5000.com/
 - Run app.py locally 
 - npm start within /client 
 
 ### Things I would have done differently given more time
-- Assume the user dies on their birthday calculate the amount needed given to the day
+- Assume the user dies on their birthday to calculate the amount needed to the day
 - Have the user be able to change values such as expected rate of return, savings_rate, and retirement_age so the user could figure out how they can reach their retirement goals 
-- Increase accuracy by factoring taxes, social secutiry, etc...
+- Increase accuracy by factoring in taxes, social secutiry, etc...
 - Have a table/plot with the users savings over the years until they retire and how the savings grows/decays once they retire
 - Would have a nicer looking frontend and the react code could be broken up into components with better functionality
 
