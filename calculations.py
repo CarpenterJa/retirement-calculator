@@ -3,13 +3,15 @@ import requests
 from requests.exceptions import HTTPError
 import json
 
+# converts value to standard USD format as string
 def as_currency(amount):
     if amount >= 0:
         return '${:,.2f}'.format(amount)
     else:
         return '-${:,.2f}'.format(-amount)
+        
 
-
+# calculates the current age in years from the given date of birth
 def calculate_age(date_of_birth):
     format = '%Y-%m-%d'
     date_of_birth = datetime.strptime(date_of_birth, format)
@@ -18,11 +20,13 @@ def calculate_age(date_of_birth):
     return age, date_of_birth
 
 
+# increases salary by 2% annually 
 def yearly_increased_salary(income, salary_increase_rate):
     income = income * (1 + salary_increase_rate)
     return income 
 
 
+# calculates how much the user makes on their final year up until they retire on there birthday
 def final_salary_year(household_income, date_of_birth):
     today = datetime.now()
     retirement_day = date_of_birth.replace(year=today.year)
@@ -35,6 +39,7 @@ def final_salary_year(household_income, date_of_birth):
     return final_years_income
 
 
+# calculates the amount of the money the user will have saved by the time they retire
 def calculate_saved_amount(current_savings, savings_rate, salary_increase_rate, expected_rate_of_return, household_income, age, retirement_age, date_of_birth):
     amount_saved = current_savings
 
@@ -48,6 +53,30 @@ def calculate_saved_amount(current_savings, savings_rate, salary_increase_rate, 
     return amount_saved, household_income
 
 
+# calculates the net present value given a rate and cash flow list
+def npv(rate, cf_list):
+    sum_pv = 0
+    for i, cf in enumerate(cf_list, start = 1):
+        sum_pv += cf / (1 + rate) ** i
+
+    return sum_pv
+
+
+# calculates the amount a user will need to retire
+def calculate_amount_you_will_need(retirement_age, life_expectancy, pre_retirement_income, inflation_rate, pre_retirement_income_percent):
+    values = []
+
+    for _ in range(retirement_age, life_expectancy):
+        pre_retirement_income *= (1 + inflation_rate) 
+        values.append(pre_retirement_income * (pre_retirement_income_percent/100))
+
+
+    retirement_rate_of_return = .05
+    pv = npv(retirement_rate_of_return, values)
+    return pv
+
+
+# fetch user data from api and convert to python dict
 def fetch_data(user_number):
     try: 
         response = requests.get(f"https://pgf7hywzb5.execute-api.us-east-1.amazonaws.com/users/{user_number}")
@@ -61,29 +90,7 @@ def fetch_data(user_number):
     except Exception as err:
         print(f'Other error occured: {err}')
 
-
-def npv(rate, cf_list):
-    sum_pv = 0
-    for i, cf in enumerate(cf_list, start = 1):
-        sum_pv += cf / (1 + rate) ** i
-
-    return sum_pv
-
-
-def calculate_amount_you_will_need(retirement_age, life_expectancy, pre_retirement_income, inflation_rate, pre_retirement_income_percent):
- 
-    values = []
-
-    for _ in range(retirement_age, life_expectancy):
-        pre_retirement_income *= (1 + inflation_rate) 
-        values.append(pre_retirement_income * (pre_retirement_income_percent/100))
-
-
-    retirement_rate_of_return = .05
-    pv = npv(retirement_rate_of_return, values)
-    return pv
-
-
+# main function that calculates retirement values
 def calculate_retirment(user_id):
     user_data = fetch_data(user_id)
 
@@ -110,6 +117,7 @@ def calculate_retirment(user_id):
     user_data["user_info"]["amount_needed"] = as_currency(amount_needed_to_retire)
     user_data["user_info"]["amount_saved"] = as_currency(amount_saved)
 
+    # return json response for react app with amount needed and amount saved
     return json.dumps(user_data)
 
     
