@@ -28,7 +28,7 @@ function App() {
 
   return (
     <Container style={{ textAlign: "center", paddingTop: "3rem" }}>
-      <h1> Retirment Calculator </h1>
+      <h1> Retirement Calculator </h1>
       <form style={{ paddingTop: "2rem" }} onSubmit={handleSubmit}>
         <label>
           Enter user id:{" "}
@@ -40,7 +40,7 @@ function App() {
         </label>
       </form>
       <div style={{ paddingTop: "2rem" }}>
-        <Button onClick={handleClick}>Calculate Retirment</Button>
+        <Button onClick={handleClick}>Calculate Retirement</Button>
       </div>
       <br />
       {showResults && (
